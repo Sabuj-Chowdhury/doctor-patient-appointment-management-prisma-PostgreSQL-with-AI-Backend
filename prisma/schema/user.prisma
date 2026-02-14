@@ -1,11 +1,3 @@
-generator client {
-  provider = "prisma-client"
-}
-
-datasource db {
-  provider = "postgresql"
-}
-
 model User {
   id                 String     @id @default(uuid())
   email              String     @unique
@@ -74,21 +66,4 @@ model Patient {
   user User @relation(fields: [email], references: [email])
 
   @@map("patient")
-}
-
-enum UserRole {
-  PATIENT
-  DOCTOR
-  ADMIN
-}
-
-enum UserStatus {
-  ACTIVE
-  INACTIVE
-  DELETED
-}
-
-enum Gender {
-  MALE
-  FEMALE
 }
