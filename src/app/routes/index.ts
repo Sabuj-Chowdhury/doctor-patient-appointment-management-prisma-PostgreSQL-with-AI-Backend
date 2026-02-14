@@ -5,10 +5,6 @@ export const router = Router();
 
 const moduleRoutes = [
   {
-    path: "/",
-    route: router,
-  },
-  {
     path: "/user",
     route: userRouter,
   },
