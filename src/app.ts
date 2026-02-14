@@ -1,8 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-// this line should use for the endpoints
-// import { router } from "./app/routes";
+import { router } from "./app/routes";
 import { envVariable } from "./app/config/env";
 import globalErrorhandler from "./app/middlewares/globalErrorHandler";
 import notFound from "./app/middlewares/notFound";
@@ -15,7 +14,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 // router for the api endpoints
-// app.use("/api/vi", router);
+app.use("/api/vi", router);
 
 app.get("/", (req: Request, res: Response) => {
   res.send({

@@ -1,11 +1,12 @@
 {
-  "name": "node_express_starter_with_prisma",
+  "name": "doctor-patient-appointment-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "a backend practice project using typescript, express, prisma, postgres and many more!",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node-dev --respawn --transpile-only ./src/server.ts"
+    "dev": "ts-node-dev --respawn --transpile-only ./src/server.ts",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "Sabuj Chowdhury",
