@@ -5,9 +5,10 @@ dotenv.config();
 interface IEnv {
   PORT: string;
   NODE_ENV: "development" | "production";
+  SALT_ROUND: string;
 }
 
-const requiredVariable = ["PORT", "NODE_ENV"];
+const requiredVariable = ["PORT", "NODE_ENV", "SALT_ROUND"];
 
 const loadEnv = (): IEnv => {
   requiredVariable.forEach((key) => {
@@ -17,8 +18,8 @@ const loadEnv = (): IEnv => {
   });
   return {
     PORT: process.env.PORT as string,
-
     NODE_ENV: process.env.NODE_ENV as "development" | "production",
+    SALT_ROUND: process.env.SALT_ROUND as string,
   };
 };
 
