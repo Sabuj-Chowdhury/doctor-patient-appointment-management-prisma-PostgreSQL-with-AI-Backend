@@ -5,8 +5,8 @@ import { sendResponse } from "../../utils/sendResponse";
 import httpStatus from "http-status";
 
 const createUser = tryAsync(async (req: Request, res: Response) => {
-  const payload = req.body;
-  const result = await UserServices.createUser(payload);
+  // const payload = req.body;
+  const result = await UserServices.createUser(req);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

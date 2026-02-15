@@ -1,8 +1,10 @@
 export interface IUserPayload {
-  email: string;
-  name: string;
+  patient: {
+    email: string;
+    name: string;
+    contactNumber: string;
+    address?: string;
+  };
+
   password: string;
-  profilePhoto?: string;
-  contactNumber: string;
-  address?: string;
 }

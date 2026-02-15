@@ -1,9 +1,15 @@
+import { Request } from "express";
 import { envVariable } from "../../config/env";
 import { prisma } from "../../config/prismaInstance";
 import { IUserPayload } from "./user.interface";
 import bcrypt from "bcryptjs";
 
-const createUser = async (payload: IUserPayload) => {
+const createUser = async (req: Request) => {
+  if (req.file) {
+    req.body.patient.profilePhoto = req.file?.path;
+  }
+
+  const payload: IUserPayload = req.body;
   const hashedPassword = await bcrypt.hash(
     payload.password,
     Number(envVariable.SALT_ROUND),
@@ -12,16 +18,12 @@ const createUser = async (payload: IUserPayload) => {
   const result = await prisma.$transaction(async (trans) => {
     await trans.user.create({
       data: {
-        email: payload.email,
+        email: payload.patient.email,
         password: hashedPassword,
       },
     });
     return await trans.patient.create({
-      data: {
-        name: payload.name,
-        email: payload.email,
-        contactNumber: payload.contactNumber,
-      },
+      data: req.body.patient,
     });
   });
 
