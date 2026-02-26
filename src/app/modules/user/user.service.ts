@@ -3,7 +3,7 @@ import { envVariable } from "../../config/env";
 import { prisma } from "../../config/prismaInstance";
 import { IUserPayload } from "./user.interface";
 import bcrypt from "bcryptjs";
-import { Admin, UserRole } from "@prisma/client";
+import { Admin, Doctor, UserRole } from "@prisma/client";
 
 const createUser = async (req: Request) => {
   if (req.file) {
@@ -61,7 +61,36 @@ const createAdmin = async (req: Request): Promise<Admin> => {
   return result;
 };
 
+const createDoctor = async (req: Request): Promise<Doctor> => {
+  if (req.file) {
+    req.body.doctor.profilePhoto = req.file?.path;
+  }
+  const hashedPassword = await bcrypt.hash(
+    req.body.password,
+    Number(envVariable.SALT_ROUND),
+  );
+
+  const doctorData = {
+    email: req.body.doctor.email,
+    password: hashedPassword,
+    role: UserRole.DOCTOR,
+  };
+
+  const result = await prisma.$transaction(async (trans) => {
+    await trans.user.create({
+      data: doctorData,
+    });
+    const doctorCreate = await trans.doctor.create({
+      data: req.body.doctor,
+    });
+    return doctorCreate;
+  });
+
+  return result;
+};
+
 export const UserServices = {
   createUser,
   createAdmin,
+  createDoctor,
 };
