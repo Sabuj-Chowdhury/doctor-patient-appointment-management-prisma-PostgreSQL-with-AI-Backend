@@ -3,6 +3,7 @@ import { envVariable } from "../../config/env";
 import { prisma } from "../../config/prismaInstance";
 import { IUserPayload } from "./user.interface";
 import bcrypt from "bcryptjs";
+import { Admin, UserRole } from "@prisma/client";
 
 const createUser = async (req: Request) => {
   if (req.file) {
@@ -30,6 +31,37 @@ const createUser = async (req: Request) => {
   return result;
 };
 
+const createAdmin = async (req: Request): Promise<Admin> => {
+  if (req.file) {
+    req.body.admin.profilePhoto = req.file?.path;
+  }
+
+  const hashedPassword = await bcrypt.hash(
+    req.body.password,
+    Number(envVariable.SALT_ROUND),
+  );
+
+  const userData = {
+    email: req.body.admin.email,
+    password: hashedPassword,
+    role: UserRole.ADMIN,
+  };
+
+  const result = await prisma.$transaction(async (trans) => {
+    await trans.user.create({
+      data: userData,
+    });
+
+    const adminCreate = await trans.admin.create({
+      data: req.body.admin,
+    });
+    return adminCreate;
+  });
+
+  return result;
+};
+
 export const UserServices = {
   createUser,
+  createAdmin,
 };
