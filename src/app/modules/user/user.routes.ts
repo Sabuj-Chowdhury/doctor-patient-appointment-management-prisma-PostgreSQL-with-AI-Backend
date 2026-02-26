@@ -4,6 +4,7 @@ import { multerUpload } from "../../config/multer.config";
 import { validateRequest } from "../../middlewares/validateRequest";
 import {
   createAdminZodValidation,
+  createDoctorZodValidation,
   createPatientZodValidation,
 } from "./user.validation";
 
@@ -23,4 +24,12 @@ userRouter.post(
   multerUpload.single("file"),
   validateRequest(createAdminZodValidation),
   UserController.cerateAdmin,
+);
+
+// create doctor -- TODO : check auth
+userRouter.post(
+  "/create-doctor",
+  multerUpload.single("file"),
+  validateRequest(createDoctorZodValidation),
+  UserController.createDoctor,
 );
