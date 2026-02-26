@@ -16,6 +16,18 @@ const createUser = tryAsync(async (req: Request, res: Response) => {
   });
 });
 
+const cerateAdmin = tryAsync(async (req: Request, res: Response) => {
+  const result = await UserServices.createAdmin(req);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Admin created successfully!",
+    data: result,
+  });
+});
+
 export const UserController = {
   createUser,
+  cerateAdmin,
 };
