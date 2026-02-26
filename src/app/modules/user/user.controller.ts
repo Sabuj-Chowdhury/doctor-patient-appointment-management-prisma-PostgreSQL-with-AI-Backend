@@ -20,9 +20,20 @@ const cerateAdmin = tryAsync(async (req: Request, res: Response) => {
   const result = await UserServices.createAdmin(req);
 
   sendResponse(res, {
-    statusCode: httpStatus.OK,
+    statusCode: httpStatus.CREATED,
     success: true,
     message: "Admin created successfully!",
+    data: result,
+  });
+});
+
+const createDoctor = tryAsync(async (req: Request, res: Response) => {
+  const result = await UserServices.createDoctor(req);
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "Doctor Created Successfully!",
     data: result,
   });
 });
@@ -30,4 +41,5 @@ const cerateAdmin = tryAsync(async (req: Request, res: Response) => {
 export const UserController = {
   createUser,
   cerateAdmin,
+  createDoctor,
 };
