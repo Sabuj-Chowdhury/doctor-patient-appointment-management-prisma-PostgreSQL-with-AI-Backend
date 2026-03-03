@@ -96,12 +96,16 @@ const getAllUsers = async ({
   search,
   sort,
   order,
+  status,
+  role,
 }: {
   page: number;
   limit: number;
   search?: any;
   sort: any;
   order: any;
+  status: any;
+  role: any;
 }) => {
   // console.log(search);
   const current_page = page || 1;
@@ -115,6 +119,8 @@ const getAllUsers = async ({
         contains: search,
         mode: "insensitive",
       },
+      status: status,
+      role: role,
     },
     orderBy:
       sort && order
