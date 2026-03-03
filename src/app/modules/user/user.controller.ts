@@ -39,7 +39,13 @@ const createDoctor = tryAsync(async (req: Request, res: Response) => {
 });
 
 const getAllUsers = tryAsync(async (req: Request, res: Response) => {
-  const result = await UserServices.getAllUsers();
+  const { page, limit } = req.query;
+  console.log(page, limit);
+
+  const result = await UserServices.getAllUsers({
+    page: Number(page),
+    limit: Number(limit),
+  });
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

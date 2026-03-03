@@ -90,8 +90,18 @@ const createDoctor = async (req: Request): Promise<Doctor> => {
 };
 
 // get all user service
-const getAllUsers = async () => {
-  const users = await prisma.user.findMany();
+const getAllUsers = async ({
+  page,
+  limit,
+}: {
+  page: number;
+  limit: number;
+}) => {
+  const skip = (page - 1) * limit;
+  const users = await prisma.user.findMany({
+    skip,
+    take: limit,
+  });
 
   return users;
 };
