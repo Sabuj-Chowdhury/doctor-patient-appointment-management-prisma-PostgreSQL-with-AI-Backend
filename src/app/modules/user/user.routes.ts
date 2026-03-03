@@ -10,6 +10,9 @@ import {
 
 export const userRouter = Router();
 
+// get all user from database
+userRouter.get("/", UserController.getAllUsers);
+
 // create user route
 userRouter.post(
   "/create-user",

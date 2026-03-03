@@ -38,8 +38,20 @@ const createDoctor = tryAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAllUsers = tryAsync(async (req: Request, res: Response) => {
+  const result = await UserServices.getAllUsers();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "All users retrieved Successfully!",
+    data: result,
+  });
+});
+
 export const UserController = {
   createUser,
   cerateAdmin,
   createDoctor,
+  getAllUsers,
 };
