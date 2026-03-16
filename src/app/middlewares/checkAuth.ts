@@ -12,7 +12,7 @@ export const checkAuth = (...roles: string[]) => {
   ) => {
     try {
       const accessToken = req.cookies.accessToken;
-      console.log(accessToken);
+      //   console.log(accessToken);
       if (!accessToken) {
         throw new AppError(httpStatus.BAD_REQUEST, "No Token Received!");
       }
@@ -24,6 +24,7 @@ export const checkAuth = (...roles: string[]) => {
 
       // set the user if token is verified
       req.user = verifyTokenResult;
+      //   console.log(req.user);
 
       if (roles.length && !roles.includes(verifyTokenResult.role)) {
         throw new AppError(httpStatus.BAD_REQUEST, "NOT Authorized!");
