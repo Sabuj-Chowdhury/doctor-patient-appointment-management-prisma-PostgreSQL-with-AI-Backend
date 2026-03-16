@@ -3,7 +3,9 @@ import { envVariable } from "../../config/env";
 import { prisma } from "../../config/prismaInstance";
 import { IUserPayload } from "./user.interface";
 import bcrypt from "bcryptjs";
-import { Admin, Doctor, UserRole } from "@prisma/client";
+import { Admin, Doctor, Prisma, UserRole } from "@prisma/client";
+import { IOptions, paginationHelper } from "../../utils/pagination_helper";
+import { searchableFields } from "./user.constants";
 
 const createUser = async (req: Request) => {
   if (req.file) {
@@ -90,49 +92,93 @@ const createDoctor = async (req: Request): Promise<Doctor> => {
 };
 
 // get all user service
-const getAllUsers = async ({
-  page,
-  limit,
-  search,
-  sort,
-  order,
-  status,
-  role,
-}: {
-  page: number;
-  limit: number;
-  search?: any;
-  sort: any;
-  order: any;
-  status: any;
-  role: any;
-}) => {
+const getAllUsers = async (options: IOptions, filter: any) => {
   // console.log(search);
-  const current_page = page || 1;
-  const current_limit = limit || 10;
-  const skip = (current_page - 1) * current_limit;
+  // ****** Old way
+  // const current_page = page || 1;
+  // const current_limit = limit || 10;
+  // const skip = (current_page - 1) * current_limit;
+
+  const { page, limit, skip, sort, order } = paginationHelper(options);
+  const { search, ...filterData } = filter;
+
+  const prismaAndConditions: Prisma.UserWhereInput[] = [];
+
+  if (search) {
+    prismaAndConditions.push({
+      OR: searchableFields.map((field) => ({
+        [field]: {
+          contains: search,
+          mode: "insensitive",
+        },
+      })),
+    });
+  }
+
+  if (Object.keys(filterData).length > 0) {
+    prismaAndConditions.push({
+      AND: Object.keys(filterData).map((key) => ({
+        [key]: {
+          equals: (filterData as any)[key],
+        },
+      })),
+    });
+  }
+
+  // console.log(prismaAndConditions);
+  const whereConditions =
+    prismaAndConditions.length > 0
+      ? {
+          AND: prismaAndConditions,
+        }
+      : {};
+
   const users = await prisma.user.findMany({
     skip,
-    take: current_limit,
-    where: {
-      email: {
-        contains: search,
-        mode: "insensitive",
-      },
-      status: status,
-      role: role,
+    take: limit,
+    // where: {
+    //   AND: prismaAndConditions,
+    // },
+    where: whereConditions,
+    orderBy: {
+      [sort]: order,
     },
-    orderBy:
-      sort && order
-        ? {
-            [sort]: order,
-          }
-        : {
-            createdAt: "desc",
-          },
   });
 
-  return users;
+  // OLD WAY
+  // const users = await prisma.user.findMany({
+  //   skip,
+  //   take: current_limit,
+  //   where: {
+  //     email: {
+  //       contains: search,
+  //       mode: "insensitive",
+  //     },
+  //     status: status,
+  //     role: role,
+  //   },
+  //   orderBy:
+  //     sort && order
+  //       ? {
+  //           [sort]: order,
+  //         }
+  //       : {
+  //           createdAt: "desc",
+  //         },
+  // });
+
+  const total = await prisma.user.count({
+    where: whereConditions,
+  });
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+    },
+    data: users,
+  };
 };
 
 export const UserServices = {
