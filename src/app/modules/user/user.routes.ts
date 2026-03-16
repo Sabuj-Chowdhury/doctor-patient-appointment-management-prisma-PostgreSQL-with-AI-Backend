@@ -23,17 +23,19 @@ userRouter.post(
   UserController.createUser,
 );
 
-// create admin  --TODO : check auth
+// create admin
 userRouter.post(
   "/create-admin",
+  checkAuth(UserRole.ADMIN),
   multerUpload.single("file"),
   validateRequest(createAdminZodValidation),
   UserController.cerateAdmin,
 );
 
-// create doctor -- TODO : check auth
+// create doctor
 userRouter.post(
   "/create-doctor",
+  checkAuth(UserRole.ADMIN),
   multerUpload.single("file"),
   validateRequest(createDoctorZodValidation),
   UserController.createDoctor,
