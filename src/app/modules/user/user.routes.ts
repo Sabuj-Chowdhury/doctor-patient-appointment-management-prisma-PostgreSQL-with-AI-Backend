@@ -7,11 +7,13 @@ import {
   createDoctorZodValidation,
   createPatientZodValidation,
 } from "./user.validation";
+import { checkAuth } from "../../middlewares/checkAuth";
+import { UserRole } from "@prisma/client";
 
 export const userRouter = Router();
 
 // get all user from database
-userRouter.get("/", UserController.getAllUsers);
+userRouter.get("/", checkAuth(UserRole.ADMIN), UserController.getAllUsers);
 
 // create user route
 userRouter.post(
