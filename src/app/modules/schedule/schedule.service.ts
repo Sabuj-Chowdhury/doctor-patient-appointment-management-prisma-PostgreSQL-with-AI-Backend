@@ -24,7 +24,7 @@ const createSchedules = async (payload: any) => {
     const endingDateTime = new Date(
       addMinutes(
         addHours(
-          `${format(endingDate, "yyyy-mm-dd")}`,
+          `${format(startingDate, "yyyy-mm-dd")}`,
           Number(endTime.split(":")[0]), //10:00
         ),
 

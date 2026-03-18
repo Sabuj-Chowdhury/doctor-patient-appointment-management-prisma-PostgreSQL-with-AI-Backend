@@ -13,7 +13,7 @@ import { UserRole } from "@prisma/client";
 export const userRouter = Router();
 
 // get all user from database
-userRouter.get("/", checkAuth(UserRole.ADMIN), UserController.getAllUsers);
+userRouter.get("/", UserController.getAllUsers);
 
 // create user route
 userRouter.post(
