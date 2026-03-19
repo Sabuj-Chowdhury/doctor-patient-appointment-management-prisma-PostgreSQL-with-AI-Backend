@@ -126,7 +126,7 @@ const getAllUsers = async (options: IOptions, filter: any) => {
   }
 
   // console.log(prismaAndConditions);
-  const whereConditions =
+  const whereConditions: Prisma.UserWhereInput =
     prismaAndConditions.length > 0
       ? {
           AND: prismaAndConditions,

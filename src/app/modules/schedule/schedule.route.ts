@@ -5,6 +5,12 @@ import { schedulesController } from "./schedule.controller";
 
 export const scheduleRouter = Router();
 
+scheduleRouter.get(
+  "/",
+  // checkAuth(UserRole.DOCTOR),
+  schedulesController.scheduleForDoctor,
+);
+
 scheduleRouter.post(
   "/",
   checkAuth(UserRole.ADMIN),

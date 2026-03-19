@@ -1,5 +1,7 @@
 import { addHours, addMinutes, format } from "date-fns";
 import { prisma } from "../../config/prismaInstance";
+import { IOptions, paginationHelper } from "../../utils/pagination_helper";
+import { Prisma } from "@prisma/client";
 
 const createSchedules = async (payload: any) => {
   //   console.log({ payload });
@@ -72,6 +74,61 @@ const createSchedules = async (payload: any) => {
   return createdSchedule;
 };
 
+const scheduleForDoctor = async (filter: any, options: IOptions) => {
+  const { page, limit, skip, sort, order } = paginationHelper(options);
+  const { startDateTime, endDateTime } = filter;
+
+  const prismaAndConditions: Prisma.ScheduleWhereInput[] = [];
+
+  if (startDateTime && endDateTime) {
+    prismaAndConditions.push({
+      AND: [
+        {
+          startDateTime: {
+            gte: startDateTime,
+          },
+        },
+        {
+          endDateTime: {
+            lte: endDateTime,
+          },
+        },
+      ],
+    });
+  }
+
+  const whereConditions: Prisma.ScheduleWhereInput =
+    prismaAndConditions.length > 0
+      ? {
+          AND: prismaAndConditions,
+        }
+      : {};
+
+  const doctorSchedule = await prisma.schedule.findMany({
+    skip,
+    take: limit,
+
+    where: whereConditions,
+    orderBy: {
+      [sort]: order,
+    },
+  });
+
+  const total = await prisma.schedule.count({
+    where: whereConditions,
+  });
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+    },
+    data: doctorSchedule,
+  };
+};
+
 export const schedulesService = {
   createSchedules,
+  scheduleForDoctor,
 };
