@@ -33,7 +33,21 @@ const scheduleForDoctor = tryAsync(async (req: Request, res: Response) => {
   });
 });
 
+const deleteSchedule = tryAsync(async (req: Request, res: Response) => {
+  const scheduleID = req.params.scheduleID as string;
+
+  const result = await schedulesService.deleteSchedule(scheduleID);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Schedule deleted successfully!",
+    data: result,
+  });
+});
+
 export const schedulesController = {
   createSchedules,
   scheduleForDoctor,
+  deleteSchedule,
 };

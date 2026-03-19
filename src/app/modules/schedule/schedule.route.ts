@@ -16,3 +16,5 @@ scheduleRouter.post(
   checkAuth(UserRole.ADMIN),
   schedulesController.createSchedules,
 );
+
+scheduleRouter.delete("/:scheduleID", schedulesController.deleteSchedule);
