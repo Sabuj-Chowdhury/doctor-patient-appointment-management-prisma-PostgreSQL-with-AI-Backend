@@ -7,7 +7,7 @@ export const scheduleRouter = Router();
 
 scheduleRouter.get(
   "/",
-  // checkAuth(UserRole.DOCTOR),
+  checkAuth(UserRole.DOCTOR, UserRole.ADMIN),
   schedulesController.scheduleForDoctor,
 );
 

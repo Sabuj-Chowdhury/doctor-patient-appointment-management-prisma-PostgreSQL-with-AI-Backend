@@ -4,6 +4,7 @@ import { schedulesService } from "./schedule.service";
 import { sendResponse } from "../../utils/sendResponse";
 import httpStatus from "http-status";
 import { pick } from "../../utils/pick";
+import { IJWTUserPayload } from "../../types/types";
 
 const createSchedules = tryAsync(async (req: Request, res: Response) => {
   const payload = req.body;
@@ -18,20 +19,28 @@ const createSchedules = tryAsync(async (req: Request, res: Response) => {
   });
 });
 
-const scheduleForDoctor = tryAsync(async (req: Request, res: Response) => {
-  const options = pick(req.query, ["page", "sort", "order", "limit"]);
-  const filter = pick(req.query, ["startDateTime", "endDateTime"]);
+const scheduleForDoctor = tryAsync(
+  async (req: Request & { user?: IJWTUserPayload }, res: Response) => {
+    const user = req.user;
 
-  const result = await schedulesService.scheduleForDoctor(filter, options);
+    const options = pick(req.query, ["page", "sort", "order", "limit"]);
+    const filter = pick(req.query, ["startDateTime", "endDateTime"]);
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "All schedules retrieved Successfully!",
-    meta: result.meta,
-    data: result.data,
-  });
-});
+    const result = await schedulesService.scheduleForDoctor(
+      filter,
+      options,
+      user as IJWTUserPayload,
+    );
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "All schedules retrieved Successfully!",
+      meta: result.meta,
+      data: result.data,
+    });
+  },
+);
 
 const deleteSchedule = tryAsync(async (req: Request, res: Response) => {
   const scheduleID = req.params.scheduleID as string;
