@@ -2,41 +2,52 @@ import { Prisma } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status";
 
-const globalErrorhandler = (
+const globalErrorHandler = (
   err: any,
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  const statusCode = httpStatus.INTERNAL_SERVER_ERROR;
+  console.log(err);
+  let statusCode: number = err.statusCode || httpStatus.INTERNAL_SERVER_ERROR;
   const success = false;
   let message = err.message || "Something went wrong!";
   let error = err;
 
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     if (err.code === "P2002") {
-      message = "Duplicate key error!";
-      error = err.meta;
+      message = "Duplicate key error";
+      error = err.meta?.driverAdapterError?.cause?.constraint;
+      statusCode = httpStatus.CONFLICT;
     }
     if (err.code === "P1000") {
-      message = "Authentication failed against database server!";
+      message = "Authentication failed against database server";
       error = err.meta;
+      statusCode = httpStatus.BAD_GATEWAY;
     }
-    if (err.code === "P1017") {
-      message = "Server has closed the connection!";
+    if (err.code === "P2003") {
+      message = "Foreign key constraint failed";
       error = err.meta;
+      statusCode = httpStatus.BAD_REQUEST;
     }
-    if (err.code === "P2006") {
-      message = "The provided value for field is not valid!";
-      error = err.meta;
-    }
+  } else if (err instanceof Prisma.PrismaClientValidationError) {
+    message = "Prisma client Validation Error";
+    statusCode = httpStatus.BAD_REQUEST;
+  } else if (err instanceof Prisma.PrismaClientUnknownRequestError) {
+    message = "Unknown Prisma error occured!";
+    error = err.message;
+    statusCode = httpStatus.BAD_REQUEST;
+  } else if (err instanceof Prisma.PrismaClientInitializationError) {
+    message = "Prisma client failed to initialize!";
+    error = err.message;
+    statusCode = httpStatus.BAD_REQUEST;
   }
 
-  res.status(statusCode).send({
+  res.status(statusCode).json({
     success,
     message,
     error,
   });
 };
 
-export default globalErrorhandler;
+export default globalErrorHandler;
