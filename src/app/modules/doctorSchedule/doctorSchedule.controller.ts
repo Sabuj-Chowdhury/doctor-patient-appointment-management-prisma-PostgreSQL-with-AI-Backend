@@ -24,6 +24,24 @@ const createDoctorSchedules = tryAsync(
   },
 );
 
+const getDoctorSchedules = tryAsync(
+  async (req: Request & { user?: IJWTUserPayload }, res: Response) => {
+    const user = req.user;
+
+    const result = await DoctorSchedulesService.getDoctorSchedules(
+      user as IJWTUserPayload,
+    );
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Doctor Schedules retrieved Successfully!",
+      data: result,
+    });
+  },
+);
+
 export const DoctorSchedulesController = {
   createDoctorSchedules,
+  getDoctorSchedules,
 };

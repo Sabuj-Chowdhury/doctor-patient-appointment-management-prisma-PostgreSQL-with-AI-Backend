@@ -24,6 +24,19 @@ const createDoctorSchedules = async (
   return result;
 };
 
+const getDoctorSchedules = async (user: IJWTUserPayload) => {
+  const doctorScheduleData = await prisma.doctorSchedules.findMany({
+    where: {
+      doctor: {
+        email: user.email,
+      },
+    },
+  });
+
+  return doctorScheduleData;
+};
+
 export const DoctorSchedulesService = {
   createDoctorSchedules,
+  getDoctorSchedules,
 };
