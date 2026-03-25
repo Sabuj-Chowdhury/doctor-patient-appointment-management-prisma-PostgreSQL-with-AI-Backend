@@ -81,7 +81,7 @@ const createSchedules = async (payload: {
 };
 
 const scheduleForDoctor = async (
-  filter: { startDateTime: string; endDateTime: string },
+  filter: any,
   options: IOptions,
   user: IJWTUserPayload,
 ) => {

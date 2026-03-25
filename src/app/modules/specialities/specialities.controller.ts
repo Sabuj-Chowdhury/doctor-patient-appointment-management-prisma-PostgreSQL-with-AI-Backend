@@ -16,6 +16,32 @@ const createSpecialities = tryAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAllFromDB = tryAsync(async (req: Request, res: Response) => {
+  const specialities = await SpecialitiesServices.getAllFromDB();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Specialties data fetched successfully!",
+    data: specialities,
+  });
+});
+
+const deleteSpeciality = tryAsync(async (req: Request, res: Response) => {
+  const id = req.params.id as string;
+
+  const specialities = await SpecialitiesServices.deleteSpeciality(id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Specialty deleted successfully!",
+    data: specialities,
+  });
+});
+
 export const SpecialitiesControllers = {
   createSpecialities,
+  getAllFromDB,
+  deleteSpeciality,
 };
