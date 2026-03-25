@@ -1,0 +1,19 @@
+model Specialities {
+  id                 String               @id @default(uuid())
+  title              String
+  icon               String
+  doctorSpecialities DoctorSpecialities[]
+
+  @@map("specialities")
+}
+
+model DoctorSpecialities {
+  specialitiesID String
+  specialities   Specialities @relation(fields: [specialitiesID], references: [id])
+
+  doctorID String
+  doctor   Doctor @relation(fields: [doctorID], references: [id])
+
+  @@id([specialitiesID, doctorID])
+  @@map("doctor_specialities")
+}
