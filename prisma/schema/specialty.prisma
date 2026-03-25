@@ -1,6 +1,6 @@
 model Specialities {
   id                 String               @id @default(uuid())
-  title              String
+  title              String               @unique
   icon               String
   doctorSpecialities DoctorSpecialities[]
 
