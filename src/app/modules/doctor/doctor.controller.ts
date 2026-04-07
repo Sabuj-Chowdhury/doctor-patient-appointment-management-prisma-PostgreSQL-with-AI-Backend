@@ -18,9 +18,8 @@ const getAllDoctorFromDB = tryAsync(async (req: Request, res: Response) => {
     statusCode: httpStatus.OK,
     success: true,
     message: "All Doctors retrieved Successfully!",
-    // meta: result.meta,
-    // data: result.data,
-    data: doctors,
+    meta: doctors.meta,
+    data: doctors.data,
   });
 });
 
