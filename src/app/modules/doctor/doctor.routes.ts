@@ -5,4 +5,6 @@ export const doctorRouter = Router();
 
 doctorRouter.get("/", DoctorControllers.getAllDoctorFromDB);
 
+doctorRouter.get("/:id", DoctorControllers.getDoctorByID);
+
 doctorRouter.patch("/:id", DoctorControllers.updateDoctorFromDB);

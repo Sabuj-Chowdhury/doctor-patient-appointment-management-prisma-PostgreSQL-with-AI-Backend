@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Doctor, Prisma } from "@prisma/client";
 import { IOptions, paginationHelper } from "../../utils/pagination_helper";
 import { DoctorSearchableFields } from "./doctor.constant";
 import { prisma } from "../../config/prismaInstance";
@@ -152,7 +152,49 @@ const updateDoctorFromDB = async (
   });
 };
 
+const getDoctorByID = async (id: string): Promise<Doctor | null> => {
+  const result = await prisma.doctor.findUnique({
+    where: {
+      id,
+      isDeleted: false,
+    },
+    include: {
+      doctorSpecialities: {
+        include: {
+          specialities: true,
+        },
+      },
+      doctorSchedules: {
+        include: {
+          schedule: true,
+        },
+      },
+    },
+  });
+
+  return result;
+};
+
+const deleteDoctor = async (id: string): Promise<Doctor> => {
+  return await prisma.$transaction(async (trans) => {
+    const deleteDoctor = await trans.doctor.delete({
+      where: {
+        id,
+      },
+    });
+
+    await trans.user.delete({
+      where: {
+        email: deleteDoctor.email,
+      },
+    });
+    return deleteDoctor;
+  });
+};
+
 export const DoctorServices = {
   getAllDoctorFromDB,
   updateDoctorFromDB,
+  deleteDoctor,
+  getDoctorByID,
 };
