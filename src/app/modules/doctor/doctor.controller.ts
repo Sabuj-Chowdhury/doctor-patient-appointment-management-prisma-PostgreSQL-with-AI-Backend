@@ -23,6 +23,21 @@ const getAllDoctorFromDB = tryAsync(async (req: Request, res: Response) => {
   });
 });
 
+const updateDoctorFromDB = tryAsync(async (req: Request, res: Response) => {
+  const id = req.params.id as string;
+
+  const payload = req.body;
+  const doctor = await DoctorServices.updateDoctorFromDB(id, payload);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Doctors update Successfully!",
+    data: doctor,
+  });
+});
+
 export const DoctorControllers = {
   getAllDoctorFromDB,
+  updateDoctorFromDB,
 };
