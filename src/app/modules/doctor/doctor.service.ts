@@ -175,7 +175,7 @@ const getDoctorByID = async (id: string): Promise<Doctor | null> => {
   return result;
 };
 
-const deleteDoctor = async (id: string): Promise<Doctor> => {
+const deleteDoctorByID = async (id: string): Promise<Doctor> => {
   return await prisma.$transaction(async (trans) => {
     const deleteDoctor = await trans.doctor.delete({
       where: {
@@ -195,6 +195,6 @@ const deleteDoctor = async (id: string): Promise<Doctor> => {
 export const DoctorServices = {
   getAllDoctorFromDB,
   updateDoctorFromDB,
-  deleteDoctor,
+  deleteDoctorByID,
   getDoctorByID,
 };
