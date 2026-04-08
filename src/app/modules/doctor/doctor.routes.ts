@@ -20,3 +20,9 @@ doctorRouter.delete(
   checkAuth(UserRole.ADMIN),
   DoctorControllers.deleteDoctorByID,
 );
+
+doctorRouter.delete(
+  "/soft/:id",
+  checkAuth(UserRole.ADMIN),
+  DoctorControllers.softDeleteDoctor,
+);

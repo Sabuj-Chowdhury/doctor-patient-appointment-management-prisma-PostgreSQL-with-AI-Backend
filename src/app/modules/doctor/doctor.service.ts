@@ -1,4 +1,4 @@
-import { Doctor, Prisma } from "@prisma/client";
+import { Doctor, Prisma, UserStatus } from "@prisma/client";
 import { IOptions, paginationHelper } from "../../utils/pagination_helper";
 import { DoctorSearchableFields } from "./doctor.constant";
 import { prisma } from "../../config/prismaInstance";
@@ -192,9 +192,34 @@ const deleteDoctorByID = async (id: string): Promise<Doctor> => {
   });
 };
 
+const softDeleteDoctor = async (id: string): Promise<Doctor> => {
+  // start the transection rollback
+  return await prisma.$transaction(async (trans) => {
+    const deleteDoctor = await trans.doctor.update({
+      where: {
+        id,
+      },
+      data: {
+        isDeleted: true,
+      },
+    });
+
+    await trans.user.update({
+      where: {
+        email: deleteDoctor.email,
+      },
+      data: {
+        status: UserStatus.DELETED,
+      },
+    });
+    return deleteDoctor;
+  });
+};
+
 export const DoctorServices = {
   getAllDoctorFromDB,
   updateDoctorFromDB,
   deleteDoctorByID,
   getDoctorByID,
+  softDeleteDoctor,
 };
