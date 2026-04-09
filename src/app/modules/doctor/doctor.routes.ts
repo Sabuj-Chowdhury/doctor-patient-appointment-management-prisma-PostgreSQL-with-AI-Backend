@@ -21,6 +21,7 @@ doctorRouter.delete(
   DoctorControllers.deleteDoctorByID,
 );
 
+//  TODO : need fixing, has bugs
 doctorRouter.delete(
   "/soft/:id",
   checkAuth(UserRole.ADMIN),
