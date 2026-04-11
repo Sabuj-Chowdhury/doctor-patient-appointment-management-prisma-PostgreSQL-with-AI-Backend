@@ -23,6 +23,34 @@ const getAllPatient = tryAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getPatientByID = tryAsync(async (req: Request, res: Response) => {
+  const id = req.params.id as string;
+
+  const patient = await PatientServices.getPatientByID(id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Patient retrieved Successfully!",
+    data: patient,
+  });
+});
+
+const softDelete = tryAsync(async (req: Request, res: Response) => {
+  const id = req.params.id as string;
+
+  const patient = await PatientServices.softDelete(id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Patient soft delete Successfully!",
+    data: patient,
+  });
+});
+
 export const PatientControllers = {
   getAllPatient,
+  getPatientByID,
+  softDelete,
 };
